@@ -4,9 +4,9 @@ class Product {
    // price;
    // description;
 
-   constructor(title, image, price, description) {
+   constructor(title, imageURL, price, description) {
       this.title = title;
-      this.imageURL = image;
+      this.imageURL = imageURL;
       this.price = price;
       this.description = description;
    }
@@ -21,16 +21,16 @@ class ProductItem {
       const prodEl = document.createElement('li');
       prodEl.className = 'product-item';
       prodEl.innerHTML = `
-         <div>
-            <img src="${this.product.imageURL}" alt="${this.product.title}" />
-            <div class="product-item__content">
-      	      <h2>${this.product.title}</h2>
-      	      <h3>\$${this.product.price}</h3>
-               <p>${this.product.description}</p>
-               <button>add to cart</button>
-            </div>
-         </div>
-		`;
+        <div>
+          <img src="${this.product.imageUrl}" alt="${this.product.title}" >
+          <div class="product-item__content">
+            <h2>${this.product.title}</h2>
+            <h3>\$${this.product.price}</h3>
+            <p>${this.product.description}</p>
+            <button>Add to Cart</button>
+          </div>
+        </div>
+      `;
       return prodEl;
    }
 }
@@ -39,7 +39,7 @@ class ProductList {
    products = [
       new Product(
          'a pillow',
-         'https://www.shopmarriott.com/images/products/v2/xlrg/Marriott-The-Marriott-Pillow-MAR-108-L_xlrg.jpg',
+         'https://www.piatafinanciara.ro/wp-content/uploads/2020/04/apple.jpeg',
          99,
          'a soft pillow'
       ),
@@ -56,10 +56,12 @@ class ProductList {
    render() {
       const renderHook = document.getElementById('app');
       const prodList = document.createElement('ul');
+
       prodList.className = 'product-list';
+
       for (const prod of this.products) {
-         const ProductItem = new Product();
-         const prodEl = ProductItem.render();
+         const productItem = new ProductItem(prod);
+         const prodEl = productItem.render();
          prodList.append(prodEl);
       }
       renderHook.append(prodList);
