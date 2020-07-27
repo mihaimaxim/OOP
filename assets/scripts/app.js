@@ -112,7 +112,7 @@ class ProductItem extends Component {
       this.render();
    }
 
-   addToCart = () => {
+   addToCart() {
       App.addProductToCart(this.product);
    };
 
