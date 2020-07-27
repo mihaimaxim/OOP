@@ -1,4 +1,11 @@
 class Product {
+   // the fields : 
+   //
+   // title = 'DEFAULT';
+   // imageURL;
+   // price;
+   // description;
+
    constructor(title, image, price, desc) {
       this.title = title;
       this.imageURL = image;
@@ -15,9 +22,14 @@ class ElementAttribute {
 }
 
 class Component {
-   constructor(renderHookID) {
+   constructor(renderHookID, shouldRender = true) {
       this.hookID = renderHookID;
+      if (shouldRender) {
+         this.render();
+      }
    }
+
+   render() {}
 
    createRootElement(tag, cssClass, attributes) {
       const rootElement = document.createElement(tag);
@@ -95,8 +107,9 @@ class ShoppingCart extends Component {
 
 class ProductItem extends Component {
    constructor(renderHookID, product) {
-      super(renderHookID);
+      super(renderHookID, false);
       this.product = product;
+      this.render();
    }
 
    addToCart = () => {
@@ -124,23 +137,38 @@ class ProductItem extends Component {
 }
 
 class ProductList extends Component {
-   products = [
-      new Product(
-         'a pillow',
-         'https://www.shopmarriott.com/images/products/v2/xlrg/Marriott-The-Marriott-Pillow-MAR-108-L_xlrg.jpg',
-         99,
-         'a soft pillow'
-      ),
-      new Product(
-         'a melon',
-         'https://upload.wikimedia.org/wikipedia/commons/2/28/Cantaloupes.jpg',
-         9,
-         'a golden melon'
-      ),
-   ];
+   products = [];
 
    constructor(renderHookID) {
       super(renderHookID);
+      this.fetchProducts();
+   }
+
+   fetchProducts() {
+      this.products = [
+         new Product(
+            'a pillow',
+            'https://www.shopmarriott.com/images/products/v2/xlrg/Marriott-The-Marriott-Pillow-MAR-108-L_xlrg.jpg',
+            99,
+            'a soft pillow'
+         ),
+         new Product(
+            'a melon',
+            'https://upload.wikimedia.org/wikipedia/commons/2/28/Cantaloupes.jpg',
+            9,
+            'a golden melon'
+         ),
+      ];
+      this.renderProducts();
+   }
+
+   renderProducts() {
+      for (const prod of this.products) {
+         new ProductItem('prod-list', prod);
+      }
+      if (this.products && this.products.length > 0) {
+         this.renderProducts();
+      }
    }
 
    render() {
@@ -149,20 +177,17 @@ class ProductList extends Component {
       this.createRootElement('ul', 'product-list', [
          new ElementAttribute('id', 'prod-list'),
       ]);
-
-      for (const prod of this.products) {
-         const productItem = new ProductItem('prod-list', prod);
-         productItem.render();
-      }
    }
 }
 
 class Shop {
+   constructor() {
+      this.render();
+   }
+
    render() {
       this.cart = new ShoppingCart('app');
-      this.cart.render();
-      const productList = new ProductList('app');
-      productList.render();
+      new ProductList('app');
    }
 }
 
