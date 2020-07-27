@@ -1,5 +1,5 @@
 class Product {
-   // the fields : 
+   // the fields :
    //
    // title = 'DEFAULT';
    // imageURL;
@@ -71,10 +71,20 @@ class ShoppingCart extends Component {
    }
 
    get totalAmount() {
-      const sum = this.items.reduce((previousValue, currentItem) => {
-         return previousValue + currentItem.price;
-      }, 0);
+      const sum = this.items.reduce(
+         (previousValue, currentItem) => previousValue + currentItem.price,
+         0
+      );
       return sum;
+   }
+
+   constructor(renderHookID) {
+      super(renderHookID, false);
+      this.orderProducts = () => {
+         console.log('Ordering ...');
+         console.log(this.items);
+      };
+      this.render();
    }
 
    addProductToCart(product) {
@@ -84,10 +94,6 @@ class ShoppingCart extends Component {
    }
 
    // second way
-
-   constructor(renderHookID) {
-      super(renderHookID);
-   }
 
    render() {
       // const cartEl = document.createElement('section');   // swaped with Component class method
@@ -101,6 +107,8 @@ class ShoppingCart extends Component {
          <h2>Total \$${0}</h2>
          <button>Order now!</button>
       `;
+      const orderButton = cartEl.querySelector('button');
+      orderButton.addEventListener('click', this.orderProducts);
       this.totalOutput = cartEl.querySelector('h2');
    }
 }
@@ -114,7 +122,7 @@ class ProductItem extends Component {
 
    addToCart() {
       App.addProductToCart(this.product);
-   };
+   }
 
    render() {
       // const prodEl = document.createElement('li');
@@ -132,7 +140,7 @@ class ProductItem extends Component {
         </div>
       `;
       const addToCartButton = prodEl.querySelector('button');
-      addToCartButton.addEventListener('click', this.addToCart);
+      addToCartButton.addEventListener('click', this.addToCart.bind(this));
    }
 }
 
@@ -166,9 +174,6 @@ class ProductList extends Component {
       for (const prod of this.products) {
          new ProductItem('prod-list', prod);
       }
-      if (this.products && this.products.length > 0) {
-         this.renderProducts();
-      }
    }
 
    render() {
@@ -177,6 +182,9 @@ class ProductList extends Component {
       this.createRootElement('ul', 'product-list', [
          new ElementAttribute('id', 'prod-list'),
       ]);
+      if (this.products && this.products.length > 0) {
+         this.renderProducts();
+      }
    }
 }
 
@@ -196,7 +204,6 @@ class App {
 
    static init() {
       const shop = new Shop();
-      shop.render();
       this.cart = shop.cart;
    }
 
