@@ -22,7 +22,7 @@ class Component {
    createRootElement(tag, cssClass, attributes) {
       const rootElement = document.createElement(tag);
       if (cssClass) {
-         rootElement.cssClass = cssClass;
+         rootElement.className = cssClass;
       }
       if (attributes && attributes.length > 0) {
          for (const attribute of attributes) {
@@ -34,7 +34,7 @@ class Component {
    }
 }
 
-class ShoppingCart {
+class ShoppingCart extends Component {
    items = [];
 
    // get totalAmount() {
@@ -73,16 +73,23 @@ class ShoppingCart {
 
    // second way
 
+   constructor(renderHookID) {
+      super(renderHookID);
+   }
+
    render() {
-      const cartEl = document.createElement('section');
-      cartEl.className = 'cart';
+      // const cartEl = document.createElement('section');   // swaped with Component class method
+      // cartEl.className = 'cart';   // swaped with Component class method
+      const cartEl = this.createRootElement(
+         'section',
+         'cart' /* cart.className */
+      );
 
       cartEl.innerHTML = `
          <h2>Total \$${0}</h2>
          <button>Order now!</button>
       `;
       this.totalOutput = cartEl.querySelector('h2');
-      return cartEl;
    }
 }
 
@@ -150,12 +157,12 @@ class Shop {
    render() {
       const renderHook = document.getElementById('app');
 
-      this.cart = new ShoppingCart();
-      const cartEl = this.cart.render();
+      this.cart = new ShoppingCart('app');
+      this.cart.render();
       const productList = new ProductList();
       const prodListEl = productList.render();
 
-      renderHook.append(cartEl, prodListEl);
+      renderHook.append(prodListEl);
    }
 }
 
